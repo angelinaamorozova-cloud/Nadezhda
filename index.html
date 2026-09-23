@@ -68,10 +68,12 @@
             width: 100%;
             height: 100%;
             transition: transform 0.6s;
+            -webkit-transform-style: preserve-3d;
             transform-style: preserve-3d;
         }
 
         .card.flipped .card-inner {
+            -webkit-transform: rotateY(180deg);
             transform: rotateY(180deg);
         }
 
@@ -79,6 +81,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
+            -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             border-radius: 16px;
             display: flex;
@@ -90,7 +93,6 @@
             overflow: hidden;
         }
 
-        /* Лицевая сторона - малиново-неоновый светящийся фон + рубашка */
         .card-front {
             background: linear-gradient(135deg, #FF1493 0%, #FF006E 100%);
             border: 2px solid #FF69B4;
@@ -109,11 +111,11 @@
             opacity: 0.85;
         }
 
-        /* Обратная сторона - микс цвета рубашки (фиолетово-розовый градиент) */
         .card-back {
             background: linear-gradient(135deg, #C9A0DC 0%, #E8B4D9 50%, #B8A9D4 100%);
             border: 2px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 0 15px rgba(201, 160, 220, 0.5), 0 0 30px rgba(184, 169, 212, 0.4);
+            -webkit-transform: rotateY(180deg);
             transform: rotateY(180deg);
         }
 
@@ -131,7 +133,6 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
-        /* Название термина на лицевой стороне */
         .card-front-title {
             font-size: 1.4em;
             text-align: center;
@@ -143,7 +144,6 @@
             padding: 0 10px;
         }
 
-        /* Описание на обратной стороне */
         .card-back-title {
             font-size: 1.2em;
             text-align: center;
@@ -166,6 +166,17 @@
             padding: 0 5px;
         }
 
+        /* Специальный стиль для карточки "Имя Надежда" с длинным текстом */
+        .card.long-text .card-back-title {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .card.long-text .card-description {
+            font-size: 0.92em;
+            line-height: 1.4;
+        }
+
         .card:hover .card-inner {
             transform: translateY(-5px);
         }
@@ -174,7 +185,6 @@
             transform: rotateY(180deg) translateY(-5px);
         }
 
-        /* Финальное поздравление - нежно фиолетовый фон без белых рамок */
         .final-section {
             background: linear-gradient(135deg, #E8D5F5 0%, #D4BFE8 50%, #C9A8DC 100%);
             border-radius: 20px;
@@ -256,6 +266,8 @@
             .card-front-title { font-size: 1.15em; }
             .card-back-title { font-size: 1em; }
             .card-description { font-size: 0.95em; }
+            .card.long-text .card-back-title { font-size: 0.95em; }
+            .card.long-text .card-description { font-size: 0.85em; }
             .final-section { padding: 30px 20px; }
             .final-section h2 { font-size: 1.8em; }
             .final-section p { font-size: 1.05em; }
@@ -270,6 +282,10 @@
             }
             .card { height: 200px; }
             .card-front-title { font-size: 1em; }
+            .card-back-title { font-size: 0.9em; }
+            .card-description { font-size: 0.85em; }
+            .card.long-text .card-back-title { font-size: 0.85em; }
+            .card.long-text .card-description { font-size: 0.78em; line-height: 1.35; }
             .card-number { font-size: 0.75em; padding: 3px 8px; }
             .counter { font-size: 1em; }
         }
@@ -281,6 +297,7 @@
             }
             .card { height: 190px; }
             .card-front-title { font-size: 0.95em; }
+            .card.long-text .card-description { font-size: 0.72em; }
         }
     </style>
 </head>
@@ -328,12 +345,12 @@
         { title: "Кофе", description: "Топливо переводчика: без него ни один текст не оживёт" },
         { title: "Дедлайн", description: "Слово, которое звучит как приговор, но Надежда всегда успевает" },
         { title: "Надеждометр", description: "Внутренний компас, который всегда указывает на грамматическую ошибку" },
-        { title: "Срочный заказ", description: "Заказчик говорит 'срочно' = было срочно ещё вчера" },
+        { title: "Срочный заказ", description: "Заказчик говорит «срочно», а срочно уже сделано ещё вчера!" },
         { title: "Терминология", description: "Три часа, четыре словаря, один момент просветления" },
-        { title: "Идеальный перевод", description: "Когда заказчик не делает правок — это магия Надежды" },
+        { title: "Идеальный перевод", description: "Когда заказчик и руководитель не делают правок — это магия Надежды." },
         { title: "Плохой исходник", description: "Требует не перевода, а экзорцизма" },
         { title: "Первый вариант готов", description: "Теперь три проверки и пять перечитываний — это закон" },
-        { title: "Мост между культурами", description: "Делаю так, чтобы все поняли друг друга" },
+        { title: "Мост между культурами", description: "Соединять даже несоединимые смыслы" },
         { title: "Работаю сверхурочно", description: "Потому что 'ещё пять минут' превратились в два часа" },
         { title: "Новое письмо от руководителя", description: "Глубокий вдох... и вперёд, к новым свершениям!" },
         { title: "Креативный перевод", description: "Когда буквальный не работает — включается искусство" },
@@ -358,7 +375,7 @@
         { title: "Надеждоночь", description: "Работа допоздна, когда текст не отпускает до идеала" },
         { title: "Надеждаотпуск", description: "Мечта каждого переводчика: пару недель без бесконечного мониторинга почты" },
         { title: "Надеждоцирк", description: "Когда заказчик просит 'просто чуть-чуть поправить', а это перевести всё заново" },
-        { title: "Имя Надежда", description: "Имя славянского происхождения, означает 'вера в лучшее'. Одна из трёх христианских добродетелей — Вера, Надежда, Любовь. Символизирует оптимизм, стойкость и способность вдохновлять других" },
+        { title: "Имя Надежда", description: "Имя славянского происхождения, означает 'вера в лучшее'. Одна из трёх христианских добродетелей — Вера, Надежда, Любовь. Символизирует оптимизм, стойкость и способность вдохновлять других", longText: true },
         { title: "Обратная связь от заказчика", description: "Спасибо за оперативность!" }
     ];
 
@@ -398,7 +415,7 @@
         
         cardsData.forEach((card, index) => {
             const cardElement = document.createElement('div');
-            cardElement.className = 'card';
+            cardElement.className = 'card' + (card.longText ? ' long-text' : '');
             cardElement.innerHTML = `
                 <div class="card-inner">
                     <div class="card-front">
