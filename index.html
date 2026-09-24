@@ -20,6 +20,7 @@
             padding: 20px;
             color: #333;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
@@ -58,31 +59,19 @@
         }
 
         .card {
-            perspective: 1000px;
-            height: 260px;
+            perspective: 1200px;
+            height: 280px;
             cursor: pointer;
-        }
-
-        .card-inner {
             position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            -webkit-transform-style: preserve-3d;
-            transform-style: preserve-3d;
         }
 
-        .card.flipped .card-inner {
-            -webkit-transform: rotateY(180deg);
-            transform: rotateY(180deg);
-        }
-
-        .card-front, .card-back {
+        /* Новый подход: два слоя вместо 3D-переворота — надёжно работает на iOS */
+        .card-face {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
             border-radius: 16px;
             display: flex;
             flex-direction: column;
@@ -91,12 +80,18 @@
             padding: 20px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
             overflow: hidden;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
         .card-front {
             background: linear-gradient(135deg, #FF1493 0%, #FF006E 100%);
             border: 2px solid #FF69B4;
             box-shadow: 0 0 15px rgba(255, 20, 147, 0.6), 0 0 30px rgba(255, 0, 110, 0.4);
+            z-index: 2;
+            opacity: 1;
+            transform: rotateY(0deg);
         }
 
         .card-front img.rubashka-img {
@@ -115,8 +110,22 @@
             background: linear-gradient(135deg, #C9A0DC 0%, #E8B4D9 50%, #B8A9D4 100%);
             border: 2px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 0 15px rgba(201, 160, 220, 0.5), 0 0 30px rgba(184, 169, 212, 0.4);
-            -webkit-transform: rotateY(180deg);
+            z-index: 1;
+            opacity: 0;
             transform: rotateY(180deg);
+        }
+
+        /* Состояние перевёрнутой карточки */
+        .card.flipped .card-front {
+            opacity: 0;
+            transform: rotateY(-180deg);
+            z-index: 1;
+        }
+
+        .card.flipped .card-back {
+            opacity: 1;
+            transform: rotateY(0deg);
+            z-index: 2;
         }
 
         .card-number {
@@ -129,7 +138,7 @@
             background: rgba(0,0,0,0.3);
             padding: 4px 12px;
             border-radius: 12px;
-            z-index: 2;
+            z-index: 3;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
@@ -142,6 +151,8 @@
             text-shadow: 2px 2px 6px rgba(0,0,0,0.5), 0 0 10px rgba(255,255,255,0.3);
             z-index: 1;
             padding: 0 10px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .card-back-title {
@@ -153,6 +164,8 @@
             margin-bottom: 12px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             z-index: 1;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .card-description {
@@ -164,25 +177,26 @@
             text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             z-index: 1;
             padding: 0 5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
-        /* Специальный стиль для карточки "Имя Надежда" с длинным текстом */
         .card.long-text .card-back-title {
-            font-size: 1.1em;
+            font-size: 1.05em;
             margin-bottom: 8px;
         }
 
         .card.long-text .card-description {
-            font-size: 0.92em;
-            line-height: 1.4;
+            font-size: 0.88em;
+            line-height: 1.35;
         }
 
-        .card:hover .card-inner {
+        .card:hover:not(.flipped) .card-front {
             transform: translateY(-5px);
         }
 
-        .card.flipped:hover .card-inner {
-            transform: rotateY(180deg) translateY(-5px);
+        .card.flipped:hover .card-back {
+            transform: translateY(-5px);
         }
 
         .final-section {
@@ -262,12 +276,12 @@
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
                 gap: 12px;
             }
-            .card { height: 220px; }
-            .card-front-title { font-size: 1.15em; }
-            .card-back-title { font-size: 1em; }
-            .card-description { font-size: 0.95em; }
-            .card.long-text .card-back-title { font-size: 0.95em; }
-            .card.long-text .card-description { font-size: 0.85em; }
+            .card { height: 260px; }
+            .card-front-title { font-size: 1.1em; }
+            .card-back-title { font-size: 0.95em; }
+            .card-description { font-size: 0.88em; line-height: 1.4; }
+            .card.long-text .card-back-title { font-size: 0.9em; }
+            .card.long-text .card-description { font-size: 0.78em; line-height: 1.3; }
             .final-section { padding: 30px 20px; }
             .final-section h2 { font-size: 1.8em; }
             .final-section p { font-size: 1.05em; }
@@ -280,13 +294,13 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
-            .card { height: 200px; }
-            .card-front-title { font-size: 1em; }
-            .card-back-title { font-size: 0.9em; }
-            .card-description { font-size: 0.85em; }
-            .card.long-text .card-back-title { font-size: 0.85em; }
-            .card.long-text .card-description { font-size: 0.78em; line-height: 1.35; }
-            .card-number { font-size: 0.75em; padding: 3px 8px; }
+            .card { height: 240px; }
+            .card-front-title { font-size: 0.95em; }
+            .card-back-title { font-size: 0.85em; margin-bottom: 6px; }
+            .card-description { font-size: 0.78em; line-height: 1.3; }
+            .card.long-text .card-back-title { font-size: 0.8em; }
+            .card.long-text .card-description { font-size: 0.7em; line-height: 1.25; }
+            .card-number { font-size: 0.7em; padding: 3px 8px; top: 8px; right: 8px; }
             .counter { font-size: 1em; }
         }
 
@@ -295,9 +309,11 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
             }
-            .card { height: 190px; }
-            .card-front-title { font-size: 0.95em; }
-            .card.long-text .card-description { font-size: 0.72em; }
+            .card { height: 220px; }
+            .card-front-title { font-size: 0.88em; }
+            .card-back-title { font-size: 0.78em; }
+            .card-description { font-size: 0.72em; }
+            .card.long-text .card-description { font-size: 0.65em; }
         }
     </style>
 </head>
@@ -417,16 +433,14 @@
             const cardElement = document.createElement('div');
             cardElement.className = 'card' + (card.longText ? ' long-text' : '');
             cardElement.innerHTML = `
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="rubashka.jpg" alt="Рубашка" class="rubashka-img" onerror="this.style.display='none'">
-                        <div class="card-number">#${index + 1}</div>
-                        <div class="card-front-title">${card.title}</div>
-                    </div>
-                    <div class="card-back">
-                        <div class="card-back-title">${card.title}</div>
-                        <div class="card-description">${card.description}</div>
-                    </div>
+                <div class="card-face card-front">
+                    <img src="rubashka.jpg" alt="Рубашка" class="rubashka-img" onerror="this.style.display='none'">
+                    <div class="card-number">#${index + 1}</div>
+                    <div class="card-front-title">${card.title}</div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-back-title">${card.title}</div>
+                    <div class="card-description">${card.description}</div>
                 </div>
             `;
             
